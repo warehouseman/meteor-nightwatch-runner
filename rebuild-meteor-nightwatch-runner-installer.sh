@@ -60,6 +60,6 @@ Is everything gone?"
 echo "Will now remove rebuilder artifacts.  Hit <enter> when done."
 read _
 cd ..
-# rm -fr tryMNWRInst
+rm -fr tryMNWRInst
 rm -fr meteor-nightwatch-runner_bk
 
