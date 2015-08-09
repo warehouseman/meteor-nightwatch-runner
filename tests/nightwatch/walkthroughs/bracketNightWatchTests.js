@@ -3,7 +3,7 @@
 
 /* NightWatch test */
 module.exports = {
-  before : function (client) {
+  before: function connect(client) {
     client.url("http://localhost:3000");
   },
 };

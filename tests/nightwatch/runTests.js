@@ -41,7 +41,7 @@ mkdirp(LOG_DIR, function confirmDir(errMkDir) {
   });
 });
 
-/*    Looks like we can now run Night Watch   */
+/*    Looks like we can run NightWatch now  */
 npm.load(
   function loadRunner( error, envNpm ) {
     var npmPrefix;

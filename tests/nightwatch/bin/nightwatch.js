@@ -92,51 +92,43 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
 
     var nightwatchExitCode = 0;
 
+    // What do if it DOES NOT connect
     if ( error ) {
       logger.fatal( error );
       logger.info( "No app is running on http://localhost:" + port + "/" );
       logger.info( "Try running an app in the background with 'meteor &'." );
       logger.info( "You can use 'fg' to return it to the foreground." );
       nightwatchExitCode = 2;
-      // TODO: exit with error that will halt travis
+
       process.exit( 1 );
     }
 
+    // What do if it DOES connect
     if ( httpResponse ) {
       logger.info( "Detected a meteor instance on port " + port );
 
       logger.info( "Launching nightwatch bridge..." );
 
+      // Try to get the configuration bits and pieces needed for launching NightWatch
       fs.readJson( configFileLocation, function processConfiguration( err, autoConfigObject ) {
         var nightwatchArguments;
         var nightwatchEnv;
         var nightwatch;
 
+        // What do if we CANNOT get the cinfiguration adata
         if ( err ) {
           logger.fatal( "Cannot configure. '" + configFileLocation + "' could not be found." );
           process.exit( 1 );
         } else {
-/*
-          // now that we know our preferred config file
-          // lets look for over-rides config files
-          if ( process.env.TRAVIS ) {
-            nightwatchCommand =
-              "/home/travis/.nvm/v0.10.38/lib/node_modules/starrynight/node_modules/nightwatch/bin/nightwatch";
-            configFileLocation = npmPrefix_ +
-              "/lib/node_modules/starrynight/configs/nightwatch/travis.json";
-          } else if ( process.env.NIGHTWATCH_CONFIG_PATH ) {
-            configFileLocation = process.env.NIGHTWATCH_CONFIG_PATH;
-          } else if ( process.env.FRAMEWORK_CONFIG_PATH ) {
-            configFileLocation = process.env.FRAMEWORK_CONFIG_PATH;
-          }
-*/
-
+          // We have the configuration data, so ...
           logger.debug( "configFileLocation", configFileLocation );
           logger.debug( "source folders : " + autoConfigObject.src_folders );
 
+          // ... marshall the configuration data for Night Watch to consume
           if ( ! options_.config ) options_.config = configFileLocation;
           nightwatchArguments = loadNightwatchArguments(options_);
 
+          // place the location of NPM in an environment variable
           nightwatchEnv = _.extend(
             process.env,
             {  npm_config_prefix: npmPrefix_  }
@@ -147,13 +139,16 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
           logger.debug( "configFileLocation:  ", configFileLocation );
           logger.debug( "nightwatchArguments: ", nightwatchArguments );
 
-
+          //  Start up the nightwatch process
           nightwatch = childProcess.spawn(
             nightwatchCommand,
             nightwatchArguments,
             {  env: nightwatchEnv  }
           );
 
+          /*  Set up the callback functions for interacting with NightWatch  */
+
+          // Event handler for stdout channel
           nightwatch.stdout.on(
             "data",
             function onStdOut( data ) {
@@ -166,6 +161,7 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
             }
           );
 
+          // Event handler for stderr channel
           nightwatch.stderr.on(
             "data",
             function onStdErr( data ) {
@@ -173,6 +169,7 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
             }
           );
 
+          // Event handler for major errors
           nightwatch.on(
             "error",
             function onError( errNightWatch ) {
@@ -185,6 +182,7 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
             }
           );
 
+          // Event handler for close of communication with NightWatch
           nightwatch.on(
             "close",
             function onClose( exitCode ) {
