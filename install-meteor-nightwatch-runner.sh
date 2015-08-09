@@ -7,7 +7,27 @@
 # To un-install execute ./tests/nightwatchs/remove-meteor-nightwatch-runner.sh
 #
 export THIS=meteor-nightwatch-runner
-echo "Installing ${THIS} in current directory -- $(pwd)."
-cd $(dirname $0)
+echo "Preparing ${THIS} in project directory -- $(pwd)."
+cd tests/nightwatch
+#
+echo "  -- installing node-touch in directory -- $(pwd)."
+npm install -y --prefix . touch
+#
+echo "  -- installing node-mkdirp in directory -- $(pwd)."
+npm install -y --prefix . mkdirp
+#
+echo "  -- installing nightwatch in directory -- $(pwd)."
+npm install -y --prefix . nightwatch
+#
+echo "  -- installing chromedriver in directory -- $(pwd)."
+npm install -y --prefix . chromedriver
+#
+cd bin
+echo "  -- installing Selenium in directory -- $(pwd)."
+wget --no-clobber http://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar
+
+cd ../../..
+
+echo "Removing installer files from directory -- $(pwd)."
 rm -f ${THIS}.run
 rm -f install-meteor-nightwatch-runner.sh

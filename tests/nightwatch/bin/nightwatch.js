@@ -10,11 +10,14 @@ const _ = require( "underscore" );
 // so we can read files from the filesystem
 const fs = require( "fs-extra" );
 
+// Use preconfigured Bunyan logger
 const logger = require("./logger.js");
 
+// Get locations of important artifacts
 const constants = require("../config/constants.js");
 
-
+//  This function collects an array all of the allowed command line options
+//  ready for passing to NightWatch
 function loadNightwatchArguments(options) {
   var nightwatchArguments = [];
 
@@ -70,9 +73,7 @@ function loadNightwatchArguments(options) {
   return nightwatchArguments;
 }
 
-// we're going to want to install the chromedriver
-// var selenium = require("selenium-standalone");
-
+// This is the Night Watch runner function
 module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclose_ ) {
   var port = 3000;
   var autoclose = true;
@@ -83,15 +84,23 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
   logger.debug( "options", options_ );
 
 
+  //  Connect to the Meteor application
   request( "http://localhost:" + port, function processRequest( error, httpResponse ) {
-    // we need to launch slightly different commands based on the environment we're in
-    // specifically, whether we're running locally or on a continuous integration server
     var configFileLocation = constants.NIGHTWATCH_CONFIG;
 
-    // set the default nightwatch executable to our starrynight installation
     var nightwatchCommand = constants.NIGHTWATCH_COMMAND;
 
     var nightwatchExitCode = 0;
+
+    if ( error ) {
+      logger.fatal( error );
+      logger.info( "No app is running on http://localhost:" + port + "/" );
+      logger.info( "Try running an app in the background with 'meteor &'." );
+      logger.info( "You can use 'fg' to return it to the foreground." );
+      nightwatchExitCode = 2;
+      // TODO: exit with error that will halt travis
+      process.exit( 1 );
+    }
 
     if ( httpResponse ) {
       logger.info( "Detected a meteor instance on port " + port );
@@ -160,7 +169,7 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
           nightwatch.stderr.on(
             "data",
             function onStdErr( data ) {
-              logger.error( "xxxxx " + data.toString() );
+              logger.error( data.toString() );
             }
           );
 
@@ -195,15 +204,6 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
           );
         }
       } );
-    }
-
-    if ( error ) {
-      logger.debug( "No app is running on http://localhost:" + port +
-        ".  Try launching an app with 'meteor run'." );
-      console.error( error );
-      nightwatchExitCode = 2;
-      // TODO: exit with error that will halt travis
-      process.exit( 1 );
     }
 
     return nightwatchExitCode;

@@ -1,38 +1,65 @@
 #!/usr/bin/env node
-// require('nightwatch/bin/runner.js');
-const path = require('path');
-const fs = require('fs');
-const recursive = require('recursive-readdir');
-const runNightwatch = require('./bin/nightwatch.js');
+// Get script that does all the work
+const runNightwatch = require("./bin/nightwatch.js");
 
-const logger = require('./bin/logger.js');
+// Use touch to ensure needed files exist
+const touch = require("touch");
+// Use mkdirp to ensure needed directories exist
+const mkdirp = require("mkdirp");
+// Use logger to ensure central instantiation of Bunyan logging
+const logger = require("./bin/logger.js");
 
 // so we can get the npm install prefix
 const npm = require( "npm" );
 // minimist lets us cleanly parse our cli arguments into an object
 const minimist = require( "minimist" );
 
+// Prepare Selenium's target logging directory and file
+const LOG_DIR = "./tests/nightwatch/logs";
+const SELENIUM_LOG = "selenium-debug.log";
+const SELENIUM_PATH = LOG_DIR + "/" + SELENIUM_LOG;
+
+// Collect our comman line parameters
 var options = minimist( process.argv );
 
+// Set logging level to "info", but ...
 logger.level("info");
 
+// ... if log level set by caller use that instead
 options.log && logger.level(options.log);
 
+mkdirp(LOG_DIR, function confirmDir(errMkDir) {
+  if (errMkDir) {
+    logger.fatal( "Cannot continue. Logs directory '" + LOG_DIR + "' could not be created." );
+    process.exit( 1 );
+  }
+  touch(SELENIUM_PATH, function confirmFile(errTouch) {
+    if (errTouch) {
+      logger.fatal( "Cannot continue. Selenium log file '" + SELENIUM_LOG + "' could not be created." );
+      process.exit( 1 );
+    }
+  });
+});
+
+/*    Looks like we can now run Night Watch   */
 npm.load(
-  function ( error, npm ) {
+  function loadRunner( error, envNpm ) {
+    var npmPrefix;
+
     if ( error ) {
       throw error;
     }
-    var npmPrefix = npm.config.get( "prefix" );
+
+    npmPrefix = envNpm.config.get( "prefix" );
 
     logger.debug( "npm prefix is", npmPrefix );
 
 //    findNightWatchTestFiles();
 
     runNightwatch(npmPrefix, options);
-
   }
 );
+
 
 /*
 String.prototype.endsWith = function(suffix) {
