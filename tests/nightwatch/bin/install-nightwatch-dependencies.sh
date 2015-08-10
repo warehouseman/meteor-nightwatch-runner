@@ -21,5 +21,17 @@ npm install -y --prefix . nightwatch
 echo "  -- installing chromedriver in directory -- $(pwd)."
 npm install -y --prefix . chromedriver
 #
+echo "  -- installing bunyan in directory -- $(pwd)."
+npm install -y --prefix . bunyan
+#
+echo "  -- installing minimist in directory -- $(pwd)."
+npm install -y --prefix . minimist
+#
+echo "  -- installing underscore in directory -- $(pwd)."
+npm install -y --prefix . underscore
+#
+echo "  -- installing fs-extra in directory -- $(pwd)."
+npm install -y --prefix . fs-extra
+#
 
 
