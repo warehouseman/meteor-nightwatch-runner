@@ -13,8 +13,12 @@ cd ./tests/nightwatch/bin/
 chmod a+x ./install-nightwatch-dependencies.sh
 source ./install-nightwatch-dependencies.sh
 
-cd ../../..
+cd ../..
 
-echo "Removing installer files from directory -- $(pwd)."
-rm -f ${THIS}.run
-rm -f install-meteor-nightwatch-runner.sh
+if [ -d "./tests/nightwatch/" ]; then
+  echo "Removing installer files from directory -- $(pwd)."
+  rm -f ${THIS}.run
+  rm -f install-meteor-nightwatch-runner.sh
+else
+  echo "* * * ERROR * * * wrong directory -- $(pwd)."
+fi
