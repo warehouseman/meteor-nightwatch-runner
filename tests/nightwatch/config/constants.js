@@ -13,7 +13,7 @@ exports.SELENIUM_LOG                = "selenium-debug.log";
 exports.SELENIUM_LOG_PATH           = exports.NIGHTWATCH_LOGS_DIR + "/" + exports.SELENIUM_LOG;
 
 exports.SELENIUM_DRIVER_JAR         = "selenium-server-standalone-2.47.1.jar";
-exports.SELENIUM_DRIVER_PATH        = exports.NIGHTWATCH_BIN_DIR + "/" + exports.SELENIUM_DRIVER_JAR;
+exports.SELENIUM_DRIVER_PATH        = exports.NIGHTWATCH_MODULES_DIR + "/" + exports.SELENIUM_DRIVER_JAR;
 
 exports.NIGHTWATCH_CONFIG           = exports.NIGHTWATCH_CONFIG_DIR + "/nightwatch.json";
 exports.NIGHTWATCH_MODULE_DIR       = exports.NIGHTWATCH_MODULES_DIR + "/nightwatch";

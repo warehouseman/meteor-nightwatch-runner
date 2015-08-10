@@ -12,7 +12,7 @@
   "globals_path": "./tests/nightwatch/config/globals.json",
   "selenium": {
     "start_process": true,
-    "server_path": "./tests/nightwatch/bin/selenium-server-standalone-2.47.1.jar",
+    "server_path": "./tests/nightwatch/node_modules/selenium-server-standalone-2.47.1.jar",
     "log_path": "tests/nightwatch/logs",
     "host": "127.0.0.1",
     "port": 4444,

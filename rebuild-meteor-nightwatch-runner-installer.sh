@@ -13,7 +13,7 @@ installIfNotInstalled () {
     echo "No ${PKG}. Please run the following command: "
     echo "sudo apt-get install ${PKG}"
   fi
-  echo; 
+  echo;
 }
 
 installIfNotInstalled "makeself"
