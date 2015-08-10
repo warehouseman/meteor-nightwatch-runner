@@ -8,47 +8,57 @@ machine:
   node:
     # Can't be certain that this build wlll work with all future versions: so specify.
     version: 0.10.33
+  environment:
+    NW_DIR: "tests/nightwatch"
 
 dependencies:
   # Whatever is written to these directories during one build will be
   #    restored verbatim on every future build.
   cache_directories:
     - ~/.meteor
-    - ~/node_modules
+    - ./tests/nightwatch/node_modules
+    - ~/nvm/v0.10.33/lib/node_modules
+    - ~/nvm/v0.10.33/bin
   # Dependencies of the build run before CircleCI's inferred commands
   pre:
     # Install  Meteor
     - mkdir -p ~/.meteor
     # If Meteor is already cached, do not need to build it again.
     - if [ ! -e ~/.meteor/meteor ]; then curl https://install.meteor.com | /bin/sh; fi
-    # Now install WebDriver
-    - mkdir -p ~/node_modules
-    # If WebDriver is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/selenium-webdriver/ ]; then npm install --prefix ~ selenium-webdriver; else echo "Selenium Webdriver seems to be cached"; fi;
+    # Launch Meteor in background
+    - ~/.meteor/meteor:
+          background: true
+    # Prepare place to which npm will install Nightwatch dependencies
+    - mkdir -p ${NW_DIR}/node_modules
     # If Bunyan is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/bunyan/ ]; then npm install --prefix ~ bunyan; else echo "Bunyan seems to be cached"; fi;
+    - if [ ! -d ~/nvm/v0.10.33/lib/node_modules/bunyan/ ]; then npm install -g bunyan; else echo "Bunyan seems to be cached"; fi;
+    # If Bunyan is already cached, do not need to install it again.
+    - if [ ! -d ${NW_DIR}/node_modules/bunyan/ ]; then npm install --prefix ${NW_DIR} bunyan; else echo "Bunyan seems to be cached"; fi;
     # If Minimist is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/minimist/ ]; then npm install --prefix ~ minimist; else echo "Minimist seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/minimist/ ]; then npm install --prefix ${NW_DIR} minimist; else echo "Minimist seems to be cached"; fi;
     # If Touch is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/touch/ ]; then npm install --prefix ~ touch; else echo "Touch seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/touch/ ]; then npm install --prefix ${NW_DIR} touch; else echo "Touch seems to be cached"; fi;
     # If MkDirP is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/mkdirp/ ]; then npm install --prefix ~ mkdirp; else echo "MkDirP seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/mkdirp/ ]; then npm install --prefix ${NW_DIR} mkdirp; else echo "MkDirP seems to be cached"; fi;
     # If NightWatch is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/nightwatch/ ]; then npm install --prefix ~ nightwatch; else echo "NightWatch seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/nightwatch/ ]; then npm install --prefix ${NW_DIR} nightwatch; else echo "NightWatch seems to be cached"; fi;
     # If ChromeDriver is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/chromedriver/ ]; then npm install --prefix ~ chromedriver; else echo "ChromeDriver seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/chromedriver/ ]; then npm install --prefix ${NW_DIR} chromedriver; else echo "ChromeDriver seems to be cached"; fi;
     # If NPM is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/chromedriver/ ]; then npm install --prefix ~ chromedriver; else echo "ChromeDriver seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/npm/ ]; then npm install --prefix ${NW_DIR} npm; else echo "NPM seems to be cached"; fi;
     # If FS-Extra is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/fs-extra/ ]; then npm install --prefix ~ fs-extra; else echo "FS-Extra seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/fs-extra/ ]; then npm install --prefix ${NW_DIR} fs-extra; else echo "FS-Extra seems to be cached"; fi;
     # If Requast is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/request/ ]; then npm install --prefix ~ request; else echo "Requast seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/request/ ]; then npm install --prefix ${NW_DIR} request; else echo "Requast seems to be cached"; fi;
     # If Underscore is already cached, do not need to install it again.
-    - if [ ! -d ~/node_modules/underscore/ ]; then npm install --prefix ~ underscore; else echo "Underscore seems to be cached"; fi;
+    - if [ ! -d ${NW_DIR}/node_modules/underscore/ ]; then npm install --prefix ${NW_DIR} underscore; else echo "Underscore seems to be cached"; fi;
     # Have symlink to a cached directory
-    - ln -s ~/node_modules node_modules
+    - ln -s ${NW_DIR}/node_modules node_modules
+    # Get selenium-server-standalone
+    - wget -P ${NW_DIR}/node_modules --no-clobber http://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar
+#
 test:
   # Tests that replace CircleCI's inferred tests
   override:
     # - tests/tinyTests/test-all.sh
-    - tests/nightwatch/runTests.js
+    - ${NW_DIR}/runTests.js | bunyan
