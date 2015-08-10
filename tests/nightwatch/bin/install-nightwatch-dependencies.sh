@@ -1,38 +1,35 @@
 #!/bin/bash
 #
-echo $(dirname $0)
-cd $(dirname $0)/..
+# echo $(dirname $0)
+# cd $(dirname $0)/..
 #
-echo "  -- Ready to install NightWatch runner dependencies in -- $(pwd)."
+# echo "  -- Ready to install NightWatch runner dependencies in -- $(pwd)."
+echo "  -- Ready to install NightWatch runner dependencies."
 #
-echo "  -- installing node-touch in directory -- $(pwd)."
-npm install -y --prefix . touch
+export LOCAL_NODEJS=${HOME}
+export LOCAL_NODEJS_MODULES=${LOCAL_NODEJS}/node_modules
+mkdir -p ${LOCAL_NODEJS_MODULES}
 #
-echo "  -- installing node-mkdirp in directory -- $(pwd)."
-npm install -y --prefix . mkdirp
+modules=( "touch" "bunyan" "underscore" "mkdirp" "nightwatch" "chromedriver" "minimist" "fs-extra" "request" )
+for idx in "${modules[@]}"
+do
+  :
+  if [ ! -d ${LOCAL_NODEJS_MODULES}/${idx}/ ]; then
+    echo "Installing '${idx}' in directory -- ${LOCAL_NODEJS_MODULES}."
+    npm install -y --prefix ${LOCAL_NODEJS} ${idx};
+  else
+    echo "Node module '${idx}' is already available.";
+  fi;
+done
 #
-echo "  -- installing nightwatch in directory -- $(pwd)."
-npm install -y --prefix . nightwatch
+echo "  -- linking to chronedriver -- ${LOCAL_NODEJS_MODULES}."
+ln -s ${LOCAL_NODEJS_MODULES}/chromedriver chromedriver
 #
-echo "  -- installing chromedriver in directory -- $(pwd)."
-npm install -y --prefix . chromedriver
-#
-echo "  -- installing bunyan in directory -- $(pwd)."
-npm install -y --prefix . bunyan
-#
-echo "  -- installing minimist in directory -- $(pwd)."
-npm install -y --prefix . minimist
-#
-echo "  -- installing underscore in directory -- $(pwd)."
-npm install -y --prefix . underscore
-#
-echo "  -- installing fs-extra in directory -- $(pwd)."
-npm install -y --prefix . fs-extra
-#
-cd node_modules
-echo "  -- installing Selenium in directory -- $(pwd)."
-wget --no-clobber http://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar
+echo "  -- installing Selenium in directory -- ${LOCAL_NODEJS_MODULES} $(pwd)."
+wget -P ${LOCAL_NODEJS_MODULES} --no-clobber http://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar
+ln -s ${LOCAL_NODEJS_MODULES}/selenium-server-standalone-2.47.1.jar selenium-server-standalone.jar
 #
 echo "Dependencies loaded."
+
 
 

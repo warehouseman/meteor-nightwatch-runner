@@ -59,6 +59,7 @@ cp meteor-nightwatch-runner.run ../meteor-nightwatch-runner
 cd ../tryMNWRInst
 ./meteor-nightwatch-runner.run
 #
+tree -aL 1 ~/node_modules
 tree -aL 4
 echo "
 Is everything as expected?"
