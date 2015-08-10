@@ -33,5 +33,6 @@ cd node_modules
 echo "  -- installing Selenium in directory -- $(pwd)."
 wget --no-clobber http://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar
 #
+echo "Dependencies loaded."
 
 

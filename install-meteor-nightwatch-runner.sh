@@ -13,7 +13,7 @@ cd ./tests/nightwatch/bin/
 chmod a+x ./install-nightwatch-dependencies.sh
 source ./install-nightwatch-dependencies.sh
 
-cd ../..
+cd ../../..
 
 if [ -d "./tests/nightwatch/" ]; then
   echo "Removing installer files from directory -- $(pwd)."
