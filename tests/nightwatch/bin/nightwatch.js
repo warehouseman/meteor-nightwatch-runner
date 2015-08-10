@@ -86,7 +86,7 @@ module.exports = function launchNightWatch( npmPrefix_, options_, port_, autoclo
 
   //  Connect to the Meteor application
   request( "http://localhost:" + port, function processRequest( error, httpResponse ) {
-    var configFileLocation = constants.NIGHTWATCH_CONFIG;
+    var configFileLocation = constants.NIGHTWATCH_CONFIG_FILE;
 
     var nightwatchCommand = constants.NIGHTWATCH_COMMAND;
 

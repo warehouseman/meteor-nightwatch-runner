@@ -44,7 +44,7 @@ cp meteor-nightwatch-runner.run ../meteor-nightwatch-runner
 cd ../tryMNWRInst
 ./meteor-nightwatch-runner.run
 #
-tree -L 4
+tree -aL 4
 echo "
 Is everything as expected?"
 echo "Now test the installation. Hit <enter> when done."

@@ -1,23 +1,22 @@
 #!/usr/bin/env node
-// Get script that does all the work
-const runNightwatch = require("./bin/nightwatch.js");
+// Get locations of important artifacts
+const constants = require("./config/constants.js");
 
-// Use touch to ensure needed files exist
-const touch = require("touch");
-// Use mkdirp to ensure needed directories exist
-const mkdirp = require("mkdirp");
 // Use logger to ensure central instantiation of Bunyan logging
 const logger = require("./bin/logger.js");
 
-// so we can get the npm install prefix
-const npm = require( "npm" );
 // minimist lets us cleanly parse our cli arguments into an object
 const minimist = require( "minimist" );
 
-// Prepare Selenium's target logging directory and file
-const LOG_DIR = "./tests/nightwatch/logs";
-const SELENIUM_LOG = "selenium-debug.log";
-const SELENIUM_PATH = LOG_DIR + "/" + SELENIUM_LOG;
+var reqd = "";
+// Use touch to ensure needed files exist
+var touch = null;
+// Use mkdirp to ensure needed directories exist
+var mkdirp = null;
+// nightwatch module
+var nightwatch = null; // eslint-disable-line no-unused-vars
+// chromedriver module
+var chromedriver = null;  // eslint-disable-line no-unused-vars
 
 // Collect our comman line parameters
 var options = minimist( process.argv );
@@ -27,18 +26,55 @@ logger.level("info");
 
 // ... if log level set by caller use that instead
 options.log && logger.level(options.log);
+const hint = "Try executing '" + constants.DEPENDENCY_INSTALLER + "'";
+try {
+  reqd = "touch";
+  touch = require(reqd);
+  logger.debug("NodeJs module '" + reqd + "' is installed.");
+  reqd = "mkdirp";
+  mkdirp = require(reqd);
+  logger.debug("NodeJs module '" + reqd + "' is installed.");
+  reqd = "nightwatch";
+  nightwatch = require(reqd);
+  logger.debug("NodeJs module '" + reqd + "' is installed.");
+  reqd = "chromedriver";
+  chromedriver = require(reqd);
+  logger.debug("NodeJs module '" + reqd + "' is installed.");
+} catch (err) {
+  logger.fatal("NodeJs module '" + reqd + "' is not installed. " + hint);
+  process.exit( 1 );
+}
 
-mkdirp(LOG_DIR, function confirmDir(errMkDir) {
+// so we can get the npm install prefix
+const npm = require( "npm" );
+
+// so we can read files from the filesystem
+const fs = require( "fs-extra" );
+
+// Get script that does all the work
+const runNightwatch = require("./bin/nightwatch.js");
+
+
+mkdirp(constants.NIGHTWATCH_LOGS_DIR, function confirmDir(errMkDir) {
   if (errMkDir) {
-    logger.fatal( "Cannot continue. Logs directory '" + LOG_DIR + "' could not be created." );
+    logger.fatal( "Cannot continue. Logs directory '" + constants.NIGHTWATCH_LOGS_DIR + "' could not be created." );
     process.exit( 1 );
   }
-  touch(SELENIUM_PATH, function confirmFile(errTouch) {
+  touch(constants.SELENIUM_LOG_PATH, function confirmFile(errTouch) {
     if (errTouch) {
-      logger.fatal( "Cannot continue. Selenium log file '" + SELENIUM_LOG + "' could not be created." );
+      logger.fatal( "Cannot continue. Selenium log file '" + constants.SELENIUM_LOG + "' could not be created." );
       process.exit( 1 );
     }
   });
+});
+
+fs.open(constants.SELENIUM_DRIVER_PATH, "r", function confirmFile(errSD, fd) {
+  if (errSD) {
+    logger.fatal( "Cannot continue. Selenium driver '" + constants.SELENIUM_DRIVER_PATH + "' needs to be installed." );
+    logger.info( hint );
+    process.exit( 1 );
+  }
+  fs.close(fd);
 });
 
 /*    Looks like we can run NightWatch now  */
