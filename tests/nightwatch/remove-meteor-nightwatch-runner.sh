@@ -12,23 +12,21 @@ rm -f constants.js
 cd ../bin
 rm -f logger.js
 rm -f nightwatch.js
+rm -f chromedriver
+rm -f install-nightwatch-dependencies.sh
+rm -f selenium-server-standalone.jar
+rm -f .gitignore
 [ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../bin
 cd ../walkthroughs
 rm -f example.js
 rm -f bracketNightWatchTests.js
 [ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../walkthroughs
-cd ../node_modules/.bin
-rm -f chromedriver
-rm -f mkdirp
-rm -f nightwatch
-rm -f touch
-[ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../.bin
-cd ..
-rm -fr chromedriver
-rm -fr mkdirp
-rm -fr nightwatch
-rm -fr touch
-[ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../node_modules
+cd ../logs
+rm -f *.log
+[ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../logs
+cd ../reports
+rm -f *.xml
+[ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../reports
 cd ..
 rm -f runTests.js
 rm -fr ./remove-meteor-nightwatch-runner.sh*

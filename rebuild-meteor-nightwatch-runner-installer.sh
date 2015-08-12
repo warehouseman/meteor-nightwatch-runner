@@ -57,7 +57,11 @@ cp meteor-nightwatch-runner.run ../meteor-nightwatch-runner
 #
 # Step into  the temporary test app directory and install Meteor Nightwatch Runner
 cd ../tryMNWRInst
-./meteor-nightwatch-runner.run
+
+
+if ! ./meteor-nightwatch-runner.run; then
+  exit 1;
+fi
 #
 tree -aL 1 ~/node_modules
 tree -aL 4
@@ -70,7 +74,7 @@ read _
 ./tests/nightwatch/remove-meteor-nightwatch-runner.sh
 pwd
 #
-ls -l
+tree -aL 4
 echo "
 Is everything gone?"
 echo "Will now remove rebuilder artifacts.  Hit <enter> when done."
