@@ -20,6 +20,10 @@ dependencies:
   pre:
     # Install  Meteor
     - mkdir -p ~/.meteor
+    # Make a place for meteor logs
+    - sudo mkdir -p /var/log/meteor
+    - sudo chmod a+rwx /var/log/meteor
+    - touch /var/log/meteor/ci4meteor.log
     # If Meteor is already cached, do not need to build it again.
     - if [ ! -e ~/.meteor/meteor ]; then curl https://install.meteor.com | /bin/sh; fi
     # Launch Meteor in background
