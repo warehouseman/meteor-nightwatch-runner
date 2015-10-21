@@ -49,7 +49,7 @@ test:
     # Run all end to end tests
     - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/nightwatch/runTests.js > ${CIRCLE_TEST_REPORTS}/nightwatch/result.json
     # Display end to end tests results
-    - cat ${CIRCLE_TEST_REPORTS}/nightwatch/result.json | bunyan -c short
+    - cat ${CIRCLE_TEST_REPORTS}/nightwatch/result.json | bunyan -o short
     # linter example command
     # - eslint packages/skeleton/skeleton-tests.js
   #
