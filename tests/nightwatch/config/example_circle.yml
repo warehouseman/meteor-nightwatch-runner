@@ -42,11 +42,14 @@ dependencies:
 test:
   # Tests that replace CircleCI's inferred tests
   override:
-    - mkdir -p ${CIRCLE_TEST_REPORTS}/nightwatch/
-    - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/nightwatch/runTests.js > ${CIRCLE_TEST_REPORTS}/nightwatch/result.json
-    - cat ${CIRCLE_TEST_REPORTS}/nightwatch/result.json | bunyan
-    # - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/nightwatch/runTests.js | bunyan
+    # Run all unit tests
     - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/tinyTests/test-all.sh
+    # Prepare for end to end tests
+    - mkdir -p ${CIRCLE_TEST_REPORTS}/nightwatch/
+    # Run all end to end tests
+    - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/nightwatch/runTests.js > ${CIRCLE_TEST_REPORTS}/nightwatch/result.json
+    # Display end to end tests results
+    - cat ${CIRCLE_TEST_REPORTS}/nightwatch/result.json | bunyan -c short
     # linter example command
     # - eslint packages/skeleton/skeleton-tests.js
   #
