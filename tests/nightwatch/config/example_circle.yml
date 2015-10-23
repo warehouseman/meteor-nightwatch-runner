@@ -21,14 +21,9 @@ dependencies:
     # Install  Meteor
     - mkdir -p ~/.meteor
     # Make a place for meteor logs
-    - sudo mkdir -p /var/log/meteor
-    - sudo chmod a+rwx /var/log/meteor
-    - touch /var/log/meteor/ci4meteor.log
+    - sudo mkdir -p /var/log/meteor; sudo chmod a+rwx /var/log/meteor; touch /var/log/meteor/ci4meteor.log
     # If Meteor is already cached, do not need to build it again.
     - if [ ! -e ~/.meteor/meteor ]; then curl https://install.meteor.com | /bin/sh; fi
-    # Launch Meteor in background
-    - ~/.meteor/meteor:
-          background: true
     # Prepare Linting dependencies
     - if [ ! -d ~/nvm/v0.10.33/lib/node_modules/eslint ]; then npm install -gy eslint; fi;
     - if [ ! -d ~/nvm/v0.10.33/lib/node_modules/eslint-plugin-react ]; then npm install -gy eslint-plugin-react; fi;
@@ -44,12 +39,12 @@ test:
   override:
     # Run all unit tests
     - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/tinyTests/test-all.sh
+    # Launch Meteor in background
+    - ~/.meteor/meteor:
+          background: true
     # Prepare for end to end tests
     - mkdir -p ${CIRCLE_TEST_REPORTS}/nightwatch/
     # Run all end to end tests
     - ${HOME}/${CIRCLE_PROJECT_REPONAME}/tests/nightwatch/runTests.js > ${CIRCLE_TEST_REPORTS}/nightwatch/result.json
     # Display end to end tests results
     - cat ${CIRCLE_TEST_REPORTS}/nightwatch/result.json | bunyan -o short
-    # linter example command
-    # - eslint packages/skeleton/skeleton-tests.js
-  #
