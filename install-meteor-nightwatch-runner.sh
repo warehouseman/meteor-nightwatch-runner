@@ -12,8 +12,9 @@ echo "Preparing ${THIS} in project directory -- $(pwd)."
 cd ./tests/nightwatch/bin/
 chmod a+x ./install-nightwatch-dependencies.sh
 source ./install-nightwatch-dependencies.sh
-
 cd ../../..
+
+chmod ug+rwx ./tests/tinyTests/ci/installSeleniumWebdriver.sh
 
 if [ -d "./tests/nightwatch/" ]; then
   echo "Removing installer files from directory -- $(pwd)."
