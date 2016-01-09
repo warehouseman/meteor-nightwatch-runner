@@ -4,6 +4,8 @@
 # Instead it used to facilitate packaging up and testing
 # the installer and uninstaller of Meteor Nightwatch Runner.
 #
+set -e;
+
 
 installIfNotInstalled () {
   PKG=$1

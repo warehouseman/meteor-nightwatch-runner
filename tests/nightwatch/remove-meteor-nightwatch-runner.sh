@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+set -e;
+
 echo "Purging meteor-nightwatch-runner from this filesystem."
 cd $(dirname $0)
 pwd
@@ -21,9 +23,11 @@ cd ../walkthroughs
 rm -f example.js
 rm -f bracketNightWatchTests.js
 [ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../walkthroughs
+mkdir -p ../logs;
 cd ../logs
 rm -f *.log
 [ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../logs
+mkdir -p ../reports
 cd ../reports
 rm -f *.xml
 [ `ls -1A . | wc -l` -eq 0 ] && rm -fr ../reports

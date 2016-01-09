@@ -4,6 +4,8 @@
 # cd $(dirname $0)/..
 #
 # echo "  -- Ready to install NightWatch runner dependencies in -- $(pwd)."
+set -e;
+
 echo "  -- Ready to install NightWatch runner dependencies."
 #
 if [ "XX" == "X$(which java)X" ]; then
@@ -24,7 +26,7 @@ else
   else
     echo "[FATAL] * * * No permissions to install ${MDL} * * * "
     echo "Please get ...
-       npm install -y --global --prefix ${GLOBAL_NODEJS} ${MDL}; 
+       npm install -y --global --prefix ${GLOBAL_NODEJS} ${MDL};
   ... to work properly.   For example try ...
        sudo npm install -y --global ${MDL}"
     exit 1;
