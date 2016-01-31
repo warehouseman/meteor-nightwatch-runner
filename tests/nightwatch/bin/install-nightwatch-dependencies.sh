@@ -13,6 +13,25 @@ if [ "XX" == "X$(which java)X" ]; then
   exit 0;
 fi;
 
+SAFE_CHROME_VERSION="48.0.2564.97"; IS=0;
+CV=$(google-chrome --version); CHROME_INSTALLED=$?;
+CHROME_VERSION=$(echo ${CV} | cut -f 3 -d " "); echo "Is minimum : '${SAFE_CHROME_VERSION}'' less than actual : '${CHROME_VERSION}'?";
+if [[ ${CHROME_INSTALLED} != ${IS} || "${CHROME_VERSION}" < "${SAFE_CHROME_VERSION}" ]]; then
+  if [[ ${CHROME_INSTALLED} == ${IS} ]]; then
+    echo "Purging Chrome Browser ... ";
+    sudo apt-get purge -y google-chrome-stable && sudo apt-get -y autoremove;
+    echo "Purged Chrome Browser ... ";
+  fi;
+
+  echo "Installing Chrome Browser ... ";
+  sudo apt-get install libxss1 libappindicator1 libindicator7;
+  mkdir -p ${HOME}/tmp
+  wget -P ${HOME}/tmp https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb;
+  sudo dpkg -i ${HOME}/tmp/google-chrome*.deb;
+  echo "Installed Chrome Browser ... ";
+
+fi;
+
 export GLOBAL_NODEJS=$(npm config get prefix)
 export GLOBAL_NODEJS_MODULES=${GLOBAL_NODEJS}/lib/node_modules
 #
@@ -60,5 +79,7 @@ wget -P ${LOCAL_NODEJS_MODULES} --no-clobber http://selenium-release.storage.goo
 rm -f $(dirname $0)/selenium-server-standalone.jar
 ln -s ${LOCAL_NODEJS_MODULES}/selenium-server-standalone-2.47.1.jar $(dirname $0)/selenium-server-standalone.jar
 #
+
+
 echo "Dependencies have been installed."
 
