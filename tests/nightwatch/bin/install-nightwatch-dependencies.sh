@@ -19,7 +19,7 @@ CHROME_VERSION=$(echo ${CV} | cut -f 3 -d " "); echo "Is minimum : '${SAFE_CHROM
 if [[ ${CHROME_INSTALLED} != ${IS} || "${CHROME_VERSION}" < "${SAFE_CHROME_VERSION}" ]]; then
   if [[ ${CHROME_INSTALLED} == ${IS} ]]; then
     echo "Purging Chrome Browser ... ";
-    sudo apt-get purge -y google-chrome-stable && sudo apt-get -y autoremove;
+    sudo apt-get purge -y google-chrome-stable;
     echo "Purged Chrome Browser ... ";
   fi;
 
