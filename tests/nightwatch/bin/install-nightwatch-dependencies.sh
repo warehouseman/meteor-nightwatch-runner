@@ -13,8 +13,14 @@ if [ "XX" == "X$(which java)X" ]; then
   exit 0;
 fi;
 
-SAFE_CHROME_VERSION="48.0.2564.97"; IS=0;
-CV=$(google-chrome --version); CHROME_INSTALLED=$?;
+SAFE_CHROME_VERSION="48.0.2564.97"; IS=0; CHROME_INSTALLED=${IS};
+set +e;
+CV=$(google-chrome --version) || {
+  CHROME_INSTALLED=$?;
+  echo "Chrome is not installed? - ${CHROME_INSTALLED}.";
+}
+set -e;
+
 CHROME_VERSION=$(echo ${CV} | cut -f 3 -d " "); echo "Is minimum : '${SAFE_CHROME_VERSION}'' less than actual : '${CHROME_VERSION}'?";
 if [[ ${CHROME_INSTALLED} != ${IS} || "${CHROME_VERSION}" < "${SAFE_CHROME_VERSION}" ]]; then
   if [[ ${CHROME_INSTALLED} == ${IS} ]]; then
