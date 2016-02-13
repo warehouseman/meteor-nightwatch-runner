@@ -13,7 +13,7 @@ if [ "XX" == "X$(which java)X" ]; then
   exit 0;
 fi;
 
-SAFE_CHROME_VERSION="48.0.2564.97"; IS=0; CHROME_INSTALLED=${IS};
+SAFE_CHROME_VERSION="48.0.2564.109"; IS=0; CHROME_INSTALLED=${IS};
 set +e;
 CV=$(google-chrome --version) || {
   CHROME_INSTALLED=$?;
